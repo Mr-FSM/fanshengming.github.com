@@ -1,0 +1,40 @@
+body{
+	background:url(./1.jpg)no-repeat;
+	background-size:100% 100%;
+}
+h1{
+	text-align:center;
+}
+h2{
+	color:red;
+}
+h3{
+	margin-left: 20px;
+	letter-spacing: 3px;
+}
+.font1{
+	font-size: 18px;
+}
+.font2{
+	color:red;
+	font-weight: bold;
+}
+.container{
+	width:80%;
+	min-height:500px;
+	margin:0 auto;
+}
+.content{
+	width:90%;
+	margin:0 auto;
+	font-size: 22px;
+	line-height: 35px;
+}
+.code{
+	width: 95%;
+	height: 300px;
+	margin:0 auto;
+	font-size: 20px;
+	font-weight: bold;
+	background:#a0f6c5;
+}

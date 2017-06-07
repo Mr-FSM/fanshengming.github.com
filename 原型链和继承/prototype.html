@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Generator" content="EditPlus®">
+  <meta name="Author" content="fanshengming">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>原型链和继承</title>
+  <link href="./1.css" rel="stylesheet">
+ </head>
+ <body>
+	<h1>js 原型链和继承的个人理解</h1>
+	<span style="float: right;">作者：fanshengming 2017/06/07</span>
+	<div class="container">
+		<div class="part1">
+			<h2>一、原型链</h2>
+				<h3>1.1对象的分类</h3>
+				  <div class="content">
+					<p class="font1">对象分为<span class="font2">函数对象</span>和<span class="font2">普通对象</span></p>
+					<p class="font2">如何区分:</p>
+					<p>&nbsp;&nbsp;凡是通过 new Function() 创建的对象都是函数对象，其他的都是普通对象</p>
+				  </div>
+				<h3>1.2原型对象（prototype）和_proto_的区别和作用</h3>
+				<div class="content">
+					<p>每个对象都会有特定的预定义属性，而prototype则是函数对象拥有的预定义属性，普通对象没有prototype,而是拥有另一个属性__proto__;<br>值得一提的事prototype它自己本身其实也是一个普通对象，他里面也包含着_proto_这个属性，这两个属性的主要作用都是用于继承</p>
+				</div>
+				<h3>1.3原型链的形成</h3>
+				<div class="content">
+					<p>
+						JS在创建对象的时候，__proto__属性指向创建它的函数对象的原型对象prototype，由__proto__串起来的直到Object.prototype.__proto__为null的链叫做原型链；如图所示：
+					</p>
+					<img src="./chain.png" alt="" width="95%">
+
+				</div>
+		</div>
+		<div class="part2">
+			<h2>二、继承</h2>
+				<h3>2.1 原型链继承</h3>
+				<div class="content">
+					<p>具体实现方法:用子类的原型对象继承父类的实例，具体实现代码如下：</p>
+					<textarea name="code" class="code">
+						<script>
+							function animal(name){
+								this.name=name;
+								this.eat=["i eat food"]
+								}
+								function dog(){
+
+								}
+								function cat(){
+								}
+								dog.prototype=new animal();
+								cat.prototype=new animal();
+								var taidi=new dog();
+								var tom=new dog();
+								taidi.name="taidi";
+								tom.name="tom";
+								console.log(taidi.name);//taidi
+								console.log(tom.name);//tom
+								taidi.eat[0]="i eat bone";
+								console.log(tom.eat[0]);//i eat bone
+						 </script>
+					</textarea>
+					<p>
+						这是js中最简单的实现继承的一种方式，但仔细看上面代码，很容易发现他存在以下的问题：<br>
+						1、子类无法向父类传参<br>
+						2、原型对象的引用属性，所有实例共享，一旦修改，所有实例一起修改
+					</p>
+				</div>
+				<h3>2.2 构造函数继承</h3>
+				<div class="content">
+					<p>具体实现方法：在子类上强行调用父类的实例属性，借用父类的构造函数来增强子类实例</p>
+					<textarea name="code" class="code">
+						<script>
+							function animal(name){
+								this.name=name;
+								this.eat=["i eat food"]
+								}
+								function dog(name){
+									animal.call(this,name);
+								}
+								var taidi=new dog("taidi");
+								var zangao=new dog("zangao");
+								console.log(taidi.name);//taidi
+								console.log(zangao.name);//zangao
+								taidi.eat[0]="i eat bone";
+								console.log(taidi.eat[0]);//i eat bone
+								console.log(zangao.eat[0]);// i eat food
+						</script>
+					</textarea>
+					<p>
+						这种方法简单粗暴的解决了原型链继承中存在的致命缺陷，但是这种方法每添加一个新实例就要添加一个function；极大的占用内存，没法实现函数的复用，容易造成内存爆炸。
+					</p>
+				</div>
+				<h3>2.3 组合继承</h3>
+				<div class="content">
+					<p>具体方法：将原型链和借用构造函数技术组合在一块的一种继承方式</p>
+					<textarea name="code" class="code">
+						<script>
+							function animal(name){
+								this.name=name;
+								this.color=["white"];
+								}
+							animal.prototype.sayName=function(){
+								console.log("my name is "+this.name);
+							}
+							function dog(name,food){
+								animal.call(this,name);
+								this.food=food;
+							}
+							dog.prototype=new animal();
+							dog.prototype.eat=function(){
+								console.log("i eat "+this.food);
+							}
+							var taidi=new dog("taidi","bone");
+							var zangao=new dog("zangao","fish");
+							taidi.color.push("black");
+							console.log(taidi.name);//taidi
+							taidi.eat();//i eat bone;
+							zangao.sayName();//my name is zangao
+							console.log(taidi.color);//Array["white","black"];
+							console.log(zangao.color);//Array["white"];
+						</script>
+					</textarea>
+					<p>
+						这种方法把上面两种方法的有点结合起来，缺点去除了，是现在最常用的js继承方式。
+					</p>
+				</div>
+		</div>
+	</div>
+ </body>
+</html>
